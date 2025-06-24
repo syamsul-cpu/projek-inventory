@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>BDB Infra Sdn Bhd - License & Contract Management</title>
+<style>
+  :root {
+    --primary-color: #005f73;
+    --secondary-color: #94d2bd;
+    --accent-color: #ee9b00;
+    --danger-color: #ca3e47;
+    --background-color: #f0f4f8;
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --max-content-width: 1100px;
+  }
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin:0; padding:0;
+    font-family: var(--font-family);
+    background: var(--background-color);
+    color: #333;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+  }
+  #app {
+    width: 100%;
+    max-width: var(--max-content-width);
+    background: white;
+    box-shadow: 0 0 20px rgba(0,0,0,0.12);
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 15px 30px;
+    font-size: 1.6rem;
+    font-weight: 700;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  header span.logo {
+    letter-spacing: 0.15em;
+  }
+  nav {
+    background-color: var(--secondary-color);
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    padding: 12px 0;
+  }
+  nav button {
+    background: none;
+    border: none;
+    padding: 9px 18px;
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: var(--primary-color);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.25s ease;
+  }
+  nav button:hover,
+  nav button.active {
+    background-color: var(--primary-color);
+    color: white;
+    box-shadow: 0 0 8px rgba(255,255,255,0.7);
+  }
+  main {
+    flex-grow: 1;
+    padding: 30px 40px;
+    overflow-y: auto;
+    min-height: 500px;
+  }
+  h2 {
+    margin-bottom: 20px;
+    color: var(--primary-color);
+    font-weight: 700;
+  }
+  form {
+    max-width: 500px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  label {
+    font-weight: 600;
+  }
+  input, select, textarea {
+    font-family: inherit;
+    padding: 9px 12px;
+    font-size: 1rem;
+    border: 1.8px solid #bbbbbb;
+    border-radius: 7px;
+    transition: border-color 0.3s ease;
+    resize: vertical;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent-color);
+    outline: none;
+  }
+  button.primary {
+    background-color: var(--accent-color);
+    color: black;
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    padding: 13px;
+    border-radius: 8px;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+  }
+  button.primary:hover:not(:disabled) {
+    background-color: #bb7a00;
+  }
+  button.primary:disabled {
+    background-color: #f4c150;
+    cursor: default;
+  }
+  button.secondary {
+    background: none;
+    border: 1.7px solid var(--accent-color);
+    color: var(--accent-color);
+    padding: 9px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  button.secondary:hover {
+    background-color: var(--accent-color);
+    color: black;
+  }
+  button.danger {
+    background-color: var(--danger-color);
+    color: white;
+    font-weight: 700;
+    border: none;
+    padding: 9px 14px;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  button.danger:hover {
+    background-color: #8a1c22;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.05);
+    overflow: hidden;
+  }
+  table thead {
+    background-color: var(--primary-color);
+    color: white;
+  }
+  table th, table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    vertical-align: middle;
+  }
+  table td.actions {
+    display: flex;
+    gap: 10px;
+  }
+  table button {
+    background-color: var(--secondary-color);
+    border: none;
+    padding: 7px 14px;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  table button:hover {
+    background-color: var(--accent-color);
+    color: black;
+  }
+  table button.delete {
+    background-color: var(--danger-color);
+    color: white;
+  }
+  table button.delete:hover {
+    background-color: #8a1c22;
+  }
+  .info-link {
+    color: var(--accent-color);
+    cursor: pointer;
+    text-decoration: underline;
+    user-select: none;
+  }
+  .info-link:focus {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+  }
+  .history-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    box-shadow: 0 6px 26px rgba(0,0,0,0.3);
+    border-radius: 10px;
+    max-width: 600px;
+    padding: 25px 30px;
+    z-index: 1001;
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+  .history-popup h3 {
+    margin: 0 0 15px 0;
+    color: var(--primary-color);
+  }
+  .history-popup button.close {
+    background: var(--danger-color);
+    color: white;
+    border: none;
+    font-size: 1.4rem;
+    font-weight: 700;
+    border-radius: 6px;
+    cursor: pointer;
+    padding: 6px 14px;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    line-height: 1;
+  }
+  .overlay {
+    position: fixed;
+    top:0; left:0; right:0; bottom:0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+  }
+  .notification-banner {
+    background-color: #fff4cc;
+    border-left: 6px solid #f2a900;
+    padding: 14px 22px;
+    margin-bottom: 28px;
+    font-weight: 700;
+    color: #805400;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    user-select: none;
+  }
+  .dashboard-stats {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 26px;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+  .dashboard-stat {
+    background: var(--secondary-color);
+    padding: 16px 30px;
+    border-radius: 12px;
+    min-width: 140px;
+    text-align: center;
+    box-shadow: inset 0 0 8px rgba(0,0,0,0.07);
+  }
+  .dashboard-stat h4 {
+    margin: 0 0 6px 0;
+    font-weight: 700;
+    color: var(--primary-color);
+    font-size: 1.25rem;
+  }
+  .dashboard-stat span {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent-color);
+    letter-spacing: 0.06em;
+  }
+  .flex-row {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+  }
+  .flex-grow {
+    flex-grow: 1;
+  }
+  .user-list {
+    max-width: 480px;
+    margin: 0 auto 40px auto;
+  }
+  .user-list table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .alert-error {
+    background-color: #f8d7da;
+    color: #842029;
+    padding: 10px 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-weight: 700;
+  }
+  #adminPanelTables {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 38px;
+    justify-content: center;
+  }
+  #adminPanelTables > div {
+    flex: 1 1 480px;
+  }
+  h3.table-title {
+    margin-bottom: 8px;
+    font-weight: 800;
+    color: var(--primary-color);
+    border-bottom: 2.5px solid var(--accent-color);
+    padding-bottom: 4px;
+  }
+  @media (max-width: 1020px) {
+    #adminPanelTables {
+      flex-direction: column;
+      gap: 26px;
+    }
+  }
+  @media (max-width: 720px) {
+    main {
+      padding: 20px 25px;
+    }
+    nav {
+      flex-wrap: wrap;
+    }
+    header {
+      font-size: 1.35rem;
+      padding: 15px 20px;
+    }
+  }
+</style>
+
+<!-- Include Chart.js, jsPDF and AutoTable plugin -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+</head>
+<body>
+<div id="app">
+  <header>
+    <span class="logo" aria-label="BDB Infra Sdn Bhd License and Contract Management System">BDB Infra Sdn Bhd License & Contract Management</span>
+    <button id="logoutBtn" aria-label="Logout" style="display:none;background-color:#ee9b00;color:black;border:none;padding:10px 18px;border-radius:8px;cursor:pointer;">Logout</button>
+  </header>
+  <nav id="nav" role="navigation" aria-label="Main navigation" style="display:none;">
+    <button data-view="dashboard" class="active" aria-current="page">Dashboard</button>
+    <button data-view="licenses">Licenses & Contracts</button>
+    <button data-view="addLicense">Add License / Contract</button>
+    <button data-view="adminPanel" style="display:none;">Admin Panel</button>
+  </nav>
+  <main>
+    <section id="loginSection" aria-label="Login section">
+      <h2>Login</h2>
+      <form id="loginForm" aria-describedby="loginError" novalidate>
+        <label for="loginUsername">Username:</label>
+        <input type="text" id="loginUsername" required autocomplete="username" aria-required="true" />
+        <label for="loginPassword">Password:</label>
+        <input type="password" id="loginPassword" required autocomplete="current-password" aria-required="true" />
+        <button type="submit" class="primary">Login</button>
+      </form>
+      <p>Don't have an account? <button id="showRegisterBtn" type="button" class="secondary">Register here</button></p>
+      <div id="loginError" class="alert-error" style="display:none;" role="alert" aria-live="assertive"></div>
+    </section>
+
+    <section id="registerSection" aria-label="Register section" style="display:none;">
+      <h2>Register</h2>
+      <form id="registerForm" aria-describedby="registerError" novalidate>
+        <label for="registerUsername">Username:</label>
+        <input type="text" id="registerUsername" required autocomplete="username" aria-required="true" />
+        <label for="registerPassword">Password:</label>
+        <input type="password" id="registerPassword" required autocomplete="new-password" aria-required="true" />
+        <label for="registerPasswordConfirm">Confirm Password:</label>
+        <input type="password" id="registerPasswordConfirm" required autocomplete="new-password" aria-required="true" />
+        <button type="submit" class="primary">Register</button>
+      </form>
+      <p>Already have an account? <button id="showLoginBtn" type="button" class="secondary">Login here</button></p>
+      <div id="registerError" class="alert-error" style="display:none;" role="alert" aria-live="assertive"></div>
+    </section>
+
+    <section id="dashboardSection" aria-label="Dashboard" style="display:none;">
+      <h2>Dashboard</h2>
+      <div id="expirationNotifications" role="alert" aria-live="polite"></div>
+      <div class="dashboard-stats" id="dashboardStats" aria-label="Dashboard statistics"></div>
+      <canvas id="dashboardChart" aria-label="Pie chart showing license and contract status" role="img" style="max-width:420px;margin: 0 auto;"></canvas>
+    </section>
+
+    <section id="licensesSection" aria-label="Licenses and Contracts section" style="display:none;">
+      <h2>Licenses & Contracts</h2>
+      <button id="exportPdfBtn" class="primary" aria-label="Export licenses and contracts to PDF" style="margin-bottom: 14px;">Export to PDF</button>
+      <div id="licensesContractsSection" role="region" aria-live="polite" aria-relevant="all" aria-atomic="true" style="display:flex; gap:30px; flex-wrap: wrap; justify-content: center;">
+        <div style="flex: 1 1 480px;">
+          <h3 class="table-title" id="licensesTableTitle">Licenses</h3>
+          <table id="licensesTable" aria-labelledby="licensesTableTitle" aria-describedby="licensesTableDesc">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Information</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <p id="licensesTableDesc" class="sr-only">Table listing all your current licenses.</p>
+        </div>
+        <div style="flex: 1 1 480px;">
+          <h3 class="table-title" id="contractsTableTitle">Contracts</h3>
+          <table id="contractsTable" aria-labelledby="contractsTableTitle" aria-describedby="contractsTableDesc">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Information</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <p id="contractsTableDesc" class="sr-only">Table listing all your current contracts.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="addLicenseSection" aria-label="Add or Renew License or Contract section" style="display:none; max-width:520px; margin:0 auto;">
+      <h2 id="addRenewTitle">Add License / Contract</h2>
+      <form id="addLicenseForm" novalidate>
+        <label for="licenseType">Type <span aria-label="required">*</span>:</label>
+        <select id="licenseType" required aria-required="true">
+          <option value="" disabled selected>Select type</option>
+          <option value="License">License</option>
+          <option value="Contract">Contract</option>
+        </select>
+        <label for="licenseName">Name <span aria-label="required">*</span>:</label>
+        <input type="text" id="licenseName" required aria-required="true" autocomplete="off" />
+        <label for="licenseStartDate">Start Date <span aria-label="required">*</span>:</label>
+        <input type="date" id="licenseStartDate" required aria-required="true" />
+        <label for="licenseEndDate">End Date <span aria-label="required">*</span>:</label>
+        <input type="date" id="licenseEndDate" required aria-required="true" />
+        <label for="licenseInfo">Information:</label>
+        <textarea id="licenseInfo" rows="4" aria-multiline="true"></textarea>
+        <div style="margin-top:15px; display: flex; flex-wrap: wrap; gap: 12px;">
+          <button type="submit" class="primary" id="saveLicenseBtn">Add License/Contract</button>
+          <button type="button" id="resetLicenseFormBtn" class="secondary" aria-label="Reset form inputs">Reset Form</button>
+          <button type="button" id="cancelRenewBtn" class="danger" aria-label="Cancel renew license or contract" style="display:none;">Cancel Renew</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="adminPanelSection" aria-label="Admin panel" style="display:none;">
+      <h2>Admin Panel - Users</h2>
+      <div class="user-list" role="region" aria-live="polite" aria-atomic="true">
+        <table aria-label="User accounts">
+          <thead>
+            <tr><th>Username</th><th>Role</th></tr>
+          </thead>
+          <tbody id="usersTableBody"></tbody>
+        </table>
+      </div>
+
+      <h2>All Licenses & Contracts Data</h2>
+      <div id="adminPanelTables" role="region" aria-label="Admin licenses and contracts" style="display:flex; gap:38px; flex-wrap: wrap; justify-content: center;">
+        <div style="flex: 1 1 480px;">
+          <h3 class="table-title" id="adminLicensesTableTitle">Licenses</h3>
+          <table id="adminLicensesTable" aria-labelledby="adminLicensesTableTitle" aria-describedby="adminLicensesTableDesc">
+            <thead>
+              <tr>
+                <th>Username (Owner)</th>
+                <th>Name</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Information</th>
+                <th>History Count</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <p id="adminLicensesTableDesc" class="sr-only">Table listing all licenses in the system grouped separately for administrator review.</p>
+        </div>
+        <div style="flex: 1 1 480px;">
+          <h3 class="table-title" id="adminContractsTableTitle">Contracts</h3>
+          <table id="adminContractsTable" aria-labelledby="adminContractsTableTitle" aria-describedby="adminContractsTableDesc">
+            <thead>
+              <tr>
+                <th>Username (Owner)</th>
+                <th>Name</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Information</th>
+                <th>History Count</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <p id="adminContractsTableDesc" class="sr-only">Table listing all contracts in the system grouped separately for administrator review.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="historyPopup" class="history-popup" role="dialog" aria-modal="true" aria-labelledby="historyTitle" style="display:none;">
+  <button class="close" title="Close" aria-label="Close Renewal History">&times;</button>
+  <h3 id="historyTitle">Renewal / Addition History</h3>
+  <ul id="historyList" style="max-height:300px; overflow-y:auto; padding-left:20px; margin-top:10px;"></ul>
+</div>
+<div id="overlay" class="overlay" style="display:none;"></div>
+
+<script>
+  'use strict';
+
+  const ADMIN_USERNAME = 'Administrator';
+  const ADMIN_PASSWORD = '123456789';
+
+  const nav = document.getElementById('nav');
+  const logoutBtn = document.getElementById('logoutBtn');
+  const loginSection = document.getElementById('loginSection');
+  const registerSection = document.getElementById('registerSection');
+  const dashboardSection = document.getElementById('dashboardSection');
+  const licensesSection = document.getElementById('licensesSection');
+  const addLicenseSection = document.getElementById('addLicenseSection');
+  const adminPanelSection = document.getElementById('adminPanelSection');
+
+  const showRegisterBtn = document.getElementById('showRegisterBtn');
+  const showLoginBtn = document.getElementById('showLoginBtn');
+
+  const loginForm = document.getElementById('loginForm');
+  const registerForm = document.getElementById('registerForm');
+  const loginError = document.getElementById('loginError');
+  const registerError = document.getElementById('registerError');
+
+  const navButtons = nav.querySelectorAll('button[data-view]');
+
+  const licensesTableBody = document.querySelector('#licensesTable tbody');
+  const contractsTableBody = document.querySelector('#contractsTable tbody');
+
+  const usersTableBody = document.getElementById('usersTableBody');
+  const adminLicensesTable = document.querySelector('#adminLicensesTable tbody');
+  const adminContractsTable = document.querySelector('#adminContractsTable tbody');
+
+  const dashboardStats = document.getElementById('dashboardStats');
+  const dashboardChartCanvas = document.getElementById('dashboardChart');
+
+  const expirationNotifications = document.getElementById('expirationNotifications');
+
+  const addLicenseForm = document.getElementById('addLicenseForm');
+  const licenseNameInput = document.getElementById('licenseName');
+  const licenseStartDateInput = document.getElementById('licenseStartDate');
+  const licenseEndDateInput = document.getElementById('licenseEndDate');
+  const licenseInfoInput = document.getElementById('licenseInfo');
+  const licenseTypeSelect = document.getElementById('licenseType');
+  const resetLicenseFormBtn = document.getElementById('resetLicenseFormBtn');
+  const addRenewTitle = document.getElementById('addRenewTitle');
+  const saveLicenseBtn = document.getElementById('saveLicenseBtn');
+  const cancelRenewBtn = document.getElementById('cancelRenewBtn');
+
+  const exportPdfBtn = document.getElementById('exportPdfBtn');
+
+  const historyPopup = document.getElementById('historyPopup');
+  const historyList = document.getElementById('historyList');
+  const overlay = document.getElementById('overlay');
+  const historyCloseBtn = historyPopup.querySelector('button.close');
+
+  let currentUser = null;
+  let renewMode = false;
+  let renewLicenseId = null;
+
+  const LS_USERS = 'bdbinfra_users';
+  const LS_LICENSES = 'bdbinfra_licenses';
+  const LS_CURRENT_USER = 'bdbinfra_currentUser';
+
+  function initLocalStorage() {
+    if (!localStorage.getItem(LS_USERS)) {
+      const defaultUsers = [
+        { username: ADMIN_USERNAME, password: ADMIN_PASSWORD, isAdmin: true }
+      ];
+      localStorage.setItem(LS_USERS, JSON.stringify(defaultUsers));
+    }
+    if (!localStorage.getItem(LS_LICENSES)) {
+      localStorage.setItem(LS_LICENSES, JSON.stringify([]));
+    }
+  }
+
+  function saveUsers(users) {
+    localStorage.setItem(LS_USERS, JSON.stringify(users));
+  }
+
+  function loadUsers() {
+    const storedUsers = localStorage.getItem(LS_USERS);
+    return storedUsers ? JSON.parse(storedUsers) : [];
+  }
+
+  function saveLicenses(licenses) {
+    localStorage.setItem(LS_LICENSES, JSON.stringify(licenses));
+  }
+
+  function loadLicenses() {
+    const storedLicenses = localStorage.getItem(LS_LICENSES);
+    return storedLicenses ? JSON.parse(storedLicenses) : [];
+  }
+
+  function saveCurrentUser(user) {
+    localStorage.setItem(LS_CURRENT_USER, JSON.stringify(user));
+  }
+
+  function loadCurrentUser() {
+    const userData = localStorage.getItem(LS_CURRENT_USER);
+    return userData ? JSON.parse(userData) : null;
+  }
+
+  function clearCurrentUser() {
+    localStorage.removeItem(LS_CURRENT_USER);
+  }
+
+  function findUserByUsername(username) {
+    const users = loadUsers();
+    return users.find(u => u.username.toLowerCase() === username.toLowerCase());
+  }
+
+  function validateLogin(username, password) {
+    if (!username || !password) return false;
+    const user = findUserByUsername(username);
+    return user && user.password === password;
+  }
+
+  function registerUser(username, password) {
+    const users = loadUsers();
+    if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) return false;
+    users.push({ username, password, isAdmin: false });
+    saveUsers(users);
+    return true;
+  }
+
+  function getLicensesForUser(username) {
+    const allLicenses = loadLicenses();
+    if (currentUser.isAdmin) {
+      return allLicenses;
+    }
+    return allLicenses.filter(l => l.owner === username);
+  }
+
+  function getLicensesByType(type) {
+    return getLicensesForUser(currentUser.username).filter(l => l.type === type);
+  }
+
+  function showExpirationNotifications() {
+    expirationNotifications.innerHTML = '';
+    const allLicenses = currentUser.isAdmin ? loadLicenses() : getLicensesForUser(currentUser.username);
+    if (!allLicenses.length) return;
+    const today = new Date();
+    const ALERT_THRESHOLD = 30;
+
+    const expiringSoon = allLicenses.filter(item => {
+      const endDate = new Date(item.endDate);
+      const diffDays = (endDate - today) / (1000 * 60 * 60 * 24);
+      return diffDays > 0 && diffDays < ALERT_THRESHOLD;
+    });
+
+    if (expiringSoon.length) {
+      const notif = document.createElement('div');
+      notif.className = 'notification-banner';
+      notif.textContent = `Warning: You have ${expiringSoon.length} license(s) or contract(s) expiring in less than 30 days! Please renew them on time.`;
+      expirationNotifications.appendChild(notif);
+    }
+  }
+
+  let pieChart = null;
+  function renderDashboard() {
+    const allLicenses = currentUser.isAdmin ? loadLicenses() : getLicensesForUser(currentUser.username);
+    const total = allLicenses.length;
+
+    if (!total) {
+      dashboardStats.innerHTML = '<p style="text-align:center; font-style: italic; color:#666;">No licenses or contracts to display.</p>';
+      if (pieChart) {
+        pieChart.destroy();
+        pieChart = null;
+      }
+      return;
+    }
+
+    const today = new Date();
+
+    const activeCount = allLicenses.filter(l => {
+      const start = new Date(l.startDate);
+      const end = new Date(l.endDate);
+      return start <= today && end >= today;
+    }).length;
+    const expiredCount = allLicenses.filter(l => new Date(l.endDate) < today).length;
+    const upcomingCount = allLicenses.filter(l => {
+      const end = new Date(l.endDate);
+      const diffDays = (end - today) / (1000 * 60 * 60 * 24);
+      return diffDays > 0 && diffDays < 30;
+    }).length;
+
+    dashboardStats.innerHTML = `
+      <div class="dashboard-stat" title="Total licenses and contracts"><h4>Total</h4><span>${total}</span></div>
+      <div class="dashboard-stat" title="Active licenses and contracts"><h4>Active</h4><span>${activeCount}</span></div>
+      <div class="dashboard-stat" title="Expired licenses and contracts"><h4>Expired</h4><span>${expiredCount}</span></div>
+      <div class="dashboard-stat" title="Pending Expiration Items in less than 30 day"><h4>Upcoming</h4><span>${upcomingCount}</span></div>
+    `;
+
+    const chartData = {
+      labels: ['Active', 'Expired', 'Upcoming < 30 days'],
+      datasets: [{
+        data: [activeCount, expiredCount, upcomingCount],
+        backgroundColor: [
+          'rgba(52, 152, 219, 0.75)',
+          'rgba(231, 76, 60, 0.75)',
+          'rgba(241, 196, 15, 0.75)',
+          'rgba(230, 126, 34, 0.85)'
+        ],
+        borderColor: [
+          'rgba(52, 152, 219, 1)',
+          'rgba(231, 76, 60, 1)',
+          'rgba(241, 196, 15, 1)',
+          'rgba(230, 126, 34, 1)'
+        ],
+        borderWidth: 1
+      }]
+    };
+
+    if (pieChart) {
+      pieChart.data = chartData;
+      pieChart.update();
+    } else {
+      pieChart = new Chart(dashboardChartCanvas, {
+        type: 'pie',
+        data: chartData,
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: 'bottom' },
+            tooltip: { enabled: true }
+          }
+        }
+      });
+    }
+  }
+  
+
+  function renderLicensesContracts() {
+    licensesTableBody.innerHTML = '';
+    contractsTableBody.innerHTML = '';
+
+    const licenses = getLicensesByType('License');
+    const contracts = getLicensesByType('Contract');
+
+    if (licenses.length === 0) {
+      licensesTableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; font-style: italic; color: #777;">You have no licenses.</td></tr>`;
+    } else {
+      licenses.forEach(l => {
+        licensesTableBody.appendChild(buildTableRow(l));
+      });
+    }
+    if (contracts.length === 0) {
+      contractsTableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; font-style: italic; color: #777;">You have no contracts.</td></tr>`;
+    } else {
+      contracts.forEach(l => {
+        contractsTableBody.appendChild(buildTableRow(l));
+      });
+    }
+  }
+
+  function buildTableRow(item) {
+    const tr = document.createElement('tr');
+
+    const nameTd = document.createElement('td');
+    const nameLink = document.createElement('span');
+    nameLink.textContent = item.name;
+    nameLink.classList.add('info-link');
+    nameLink.tabIndex = 0;
+    nameLink.setAttribute('role', 'button');
+    nameLink.onclick = () => openHistory(item);
+    nameLink.onkeypress = e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openHistory(item);
+      }
+    };
+    nameTd.appendChild(nameLink);
+    tr.appendChild(nameTd);
+
+    const startTd = document.createElement('td');
+    startTd.textContent = item.startDate;
+    tr.appendChild(startTd);
+
+    const endTd = document.createElement('td');
+    endTd.textContent = item.endDate;
+    tr.appendChild(endTd);
+
+    const infoTd = document.createElement('td');
+    infoTd.textContent = item.info || '';
+    tr.appendChild(infoTd);
+
+    const actionsTd = document.createElement('td');
+    actionsTd.classList.add('actions');
+
+    const renewBtn = document.createElement('button');
+    renewBtn.textContent = 'Renew';
+    renewBtn.title = `Renew this ${item.type}`;
+    renewBtn.onclick = () => startRenew(item.id);
+    actionsTd.appendChild(renewBtn);
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = 'Delete';
+    deleteBtn.title = `Delete this ${item.type}`;
+    deleteBtn.classList.add('delete');
+    deleteBtn.onclick = () => deleteItem(item.id);
+    actionsTd.appendChild(deleteBtn);
+
+    tr.appendChild(actionsTd);
+    return tr;
+  }
+
+  function openHistory(item) {
+    historyList.innerHTML = '';
+    if (!item.history || !item.history.length) {
+      const li = document.createElement('li');
+      li.textContent = 'No renewal or addition history.';
+      historyList.appendChild(li);
+    } else {
+      item.history.forEach(record => {
+        const li = document.createElement('li');
+        li.textContent = `${record.date} - ${record.action}${record.detail ? ' - ' + record.detail : ''}`;
+        historyList.appendChild(li);
+      });
+    }
+    historyPopup.style.display = 'block';
+    overlay.style.display = 'block';
+    historyCloseBtn.focus();
+  }
+
+  historyCloseBtn.onclick = closeHistory;
+  overlay.onclick = closeHistory;
+  function closeHistory() {
+    historyPopup.style.display = 'none';
+    overlay.style.display = 'none';
+  }
+
+  function startRenew(id) {
+    const allLicenses = loadLicenses();
+    const item = allLicenses.find(l => l.id === id && l.owner === currentUser.username);
+    if (!item) {
+      alert('Item not found or permission denied.');
+      return;
+    }
+    renewMode = true;
+    renewLicenseId = id;
+
+    addRenewTitle.textContent = `Renew ${item.type}`;
+    saveLicenseBtn.textContent = 'Renew';
+    cancelRenewBtn.style.display = 'inline-block';
+
+    licenseTypeSelect.value = item.type;
+    licenseNameInput.value = item.name;
+    licenseStartDateInput.value = '';
+    licenseEndDateInput.value = '';
+    licenseInfoInput.value = '';
+
+    licenseTypeSelect.disabled = true;
+    licenseNameInput.disabled = true;
+
+    showView('addLicense');
+    licenseStartDateInput.focus();
+  }
+  cancelRenewBtn.onclick = cancelRenew;
+  function cancelRenew() {
+    renewMode = false;
+    renewLicenseId = null;
+    addRenewTitle.textContent = 'Add License / Contract';
+    saveLicenseBtn.textContent = 'Add License/Contract';
+    cancelRenewBtn.style.display = 'none';
+
+    licenseTypeSelect.disabled = false;
+    licenseNameInput.disabled = false;
+
+    resetAddLicenseForm();
+    showView('licenses');
+  }
+
+  resetLicenseFormBtn.onclick = () => {
+    if (renewMode) {
+      licenseStartDateInput.value = '';
+      licenseEndDateInput.value = '';
+      licenseInfoInput.value = '';
+    } else {
+      licenseTypeSelect.value = '';
+      licenseNameInput.value = '';
+      licenseStartDateInput.value = '';
+      licenseEndDateInput.value = '';
+      licenseInfoInput.value = '';
+    }
+  };
+
+  addLicenseForm.onsubmit = e => {
+    e.preventDefault();
+    const type = licenseTypeSelect.value;
+    const name = licenseNameInput.value.trim();
+    const startDate = licenseStartDateInput.value;
+    const endDate = licenseEndDateInput.value;
+    const info = licenseInfoInput.value.trim();
+
+    if (!type) {
+      alert('Please select Type (License or Contract).');
+      licenseTypeSelect.focus();
+      return;
+    }
+    if (!name) {
+      alert('Please enter Name.');
+      licenseNameInput.focus();
+      return;
+    }
+    if (!startDate) {
+      alert('Please select Start Date.');
+      licenseStartDateInput.focus();
+      return;
+    }
+    if (!endDate) {
+      alert('Please select End Date.');
+      licenseEndDateInput.focus();
+      return;
+    }
+    if (startDate > endDate) {
+      alert('Start Date cannot be after End Date.');
+      licenseStartDateInput.focus();
+      return;
+    }
+
+    const allLicenses = loadLicenses();
+    if (renewMode) {
+      const item = allLicenses.find(l => l.id === renewLicenseId && l.owner === currentUser.username);
+      if (!item) {
+        alert('Item not found or permission denied.');
+        cancelRenew();
+        return;
+      }
+      item.startDate = startDate;
+      item.endDate = endDate;
+      item.info = info;
+      const now = new Date().toISOString().slice(0,10);
+      if (!Array.isArray(item.history)) item.history = [];
+      item.history.push({ date: now, action: 'Renewed', detail: `Valid from ${startDate} to ${endDate}`});
+      saveLicenses(allLicenses);
+      alert('Renewal successful.');
+      cancelRenew();
+    } else {
+      const newItem = {
+        id: crypto.randomUUID(),
+        owner: currentUser.username,
+        type,
+        name,
+        startDate,
+        endDate,
+        info,
+        history: [{ date: new Date().toISOString().slice(0,10), action: 'Added', detail: ''}]
+      };
+      allLicenses.push(newItem);
+      saveLicenses(allLicenses);
+      alert('New license/contract added successfully.');
+      resetAddLicenseForm();
+    }
+    renderLicensesContracts();
+    renderDashboard();
+  };
+  function AddLicensesContracts() {
+  const type = document.getElementById('licenseTypeSelect').value;
+  const name = document.getElementById('licenseNameInput').value.trim();
+  const startDate = document.getElementById('licenseStartDateInput').value;
+  const endDate = document.getElementById('licenseEndDateInput').value;
+  const info = document.getElementById('licenseInfoInput').value.trim();
+
+  if (!type) {
+    alert('Sila pilih jenis (Lesen atau Kontrak).');
+    document.getElementById('licenseTypeSelect').focus();
+    return;
+  }
+  if (!name) {
+    alert('Sila masukkan nama.');
+    document.getElementById('licenseNameInput').focus();
+    return;
+  }
+  if (!startDate) {
+    alert('Sila pilih tarikh mula.');
+    document.getElementById('licenseStartDateInput').focus();
+    return;
+  }
+  if (!endDate) {
+    alert('Sila pilih tarikh tamat.');
+    document.getElementById('licenseEndDateInput').focus();
+    return;
+  }
+  if (startDate > endDate) {
+    alert('Tarikh mula tidak boleh melebihi tarikh tamat.');
+    document.getElementById('licenseStartDateInput').focus();
+    return;
+  }
+
+  const allLicenses = loadLicenses(); // pastikan fungsi ni wujud
+  const newItem = {
+    id: crypto.randomUUID(),
+    owner: currentUser.username, // pastikan currentUser diset login
+    type,
+    name,
+    startDate,
+    endDate,
+    info,
+    history: [{
+      date: new Date().toISOString().slice(0, 10),
+      action: 'Added',
+      detail: `Sah dari ${startDate} hingga ${endDate}`
+    }]
+  };
+
+  allLicenses.push(newItem);
+  saveLicenses(allLicenses); // pastikan fungsi ni simpan ke localStorage
+  alert('Lesen/Kontrak berjaya ditambah.');
+
+  resetAddLicenseForm();     // reset input form
+  renderLicensesContracts(); // render semula paparan
+  renderDashboard();         // update carta pai
+}
+
+
+  function deleteItem(id) {
+    if (!confirm('Are you sure you want to delete this item? This action cannot be undone.')) return;
+    const allLicenses = loadLicenses();
+    const index = allLicenses.findIndex(l => l.id === id && l.owner === currentUser.username);
+    if (index === -1) {
+      alert('Item not found or permission denied.');
+      return;
+    }
+    allLicenses.splice(index, 1);
+    saveLicenses(allLicenses);
+    alert('Item deleted successfully.');
+    renderLicensesContracts();
+    renderDashboard();
+  }
+function deleteUserAndData(username) {
+  // Padam user dari senarai pengguna
+  let users = loadUsers();
+  users = users.filter(u => u.username !== username);
+  saveUsers(users);
+
+  // Padam semua lesen & kontrak milik user tu
+  let licenses = loadLicenses();
+  licenses = licenses.filter(l => l.owner !== username);
+  saveLicenses(licenses);
+
+  alert(`User "${username}" and their data have been deleted.`);
+  renderAdminPanel();
+  renderLicensesContracts();
+  renderDashboard();
+}
+
+  function renderAdminPanel() {
+    const users = loadUsers();
+    usersTableBody.innerHTML = '';
+    users.forEach(u => {
+      const tr = document.createElement('tr');
+      const tdName = document.createElement('td');
+      tdName.textContent = u.username;
+      const tdRole = document.createElement('td');
+      tdRole.textContent = u.isAdmin ? 'Admin' : 'User';
+      const tdActions = document.createElement('td');
+       if (u.username !== ADMIN_USERNAME) {
+        const delBtn = document.createElement('button');
+        delBtn.textContent = 'Delete';
+        delBtn.classList.add('userDelete');
+        delBtn.title = `Delete user ${u.username} and all their data`;
+        delBtn.onclick = () => {
+          if (confirm(`Are you sure you want to delete user "${u.username}" and all their licenses and contracts? This action cannot be undone.`)) {
+            deleteUserAndData(u.username);
+          }
+        };
+        tdActions.appendChild(delBtn);
+      } else {
+        tdActions.textContent = '';
+      }
+    
+       tr.appendChild(tdName);
+       tr.appendChild(tdRole);
+       tr.appendChild(tdActions);
+      usersTableBody.appendChild(tr);
+  
+    });
+
+    const allLicenses = loadLicenses();
+
+    adminLicensesTable.innerHTML = '';
+    adminContractsTable.innerHTML = '';
+
+    const licenses = allLicenses.filter(l => l.type === 'License');
+    const contracts = allLicenses.filter(l => l.type === 'Contract');
+
+    if (licenses.length === 0) {
+      adminLicensesTable.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#666; font-style:italic;">No licenses available.</td></tr>';
+    } else {
+      licenses.forEach(l => {
+        const tr = document.createElement('tr');
+
+        const tdOwner = document.createElement('td');
+        tdOwner.textContent = l.owner;
+        tr.appendChild(tdOwner);
+
+        const tdName = document.createElement('td');
+        tdName.textContent = l.name;
+        tr.appendChild(tdName);
+
+        const tdStart = document.createElement('td');
+        tdStart.textContent = l.startDate;
+        tr.appendChild(tdStart);
+
+        const tdEnd = document.createElement('td');
+        tdEnd.textContent = l.endDate;
+        tr.appendChild(tdEnd);
+
+        const tdInfo = document.createElement('td');
+        tdInfo.textContent = l.info || '';
+        tr.appendChild(tdInfo);
+
+        const tdHistCount = document.createElement('td');
+        tdHistCount.textContent = Array.isArray(l.history) ? l.history.length : 0;
+        tr.appendChild(tdHistCount);
+
+        adminLicensesTable.appendChild(tr);
+      });
+    }
+
+    if (contracts.length === 0) {
+      adminContractsTable.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#666; font-style:italic;">No contracts available.</td></tr>';
+    } else {
+      contracts.forEach(l => {
+        const tr = document.createElement('tr');
+
+        const tdOwner = document.createElement('td');
+        tdOwner.textContent = l.owner;
+        tr.appendChild(tdOwner);
+
+        const tdName = document.createElement('td');
+        tdName.textContent = l.name;
+        tr.appendChild(tdName);
+
+        const tdStart = document.createElement('td');
+        tdStart.textContent = l.startDate;
+        tr.appendChild(tdStart);
+
+        const tdEnd = document.createElement('td');
+        tdEnd.textContent = l.endDate;
+        tr.appendChild(tdEnd);
+
+        const tdInfo = document.createElement('td');
+        tdInfo.textContent = l.info || '';
+        tr.appendChild(tdInfo);
+
+        const tdHistCount = document.createElement('td');
+        tdHistCount.textContent = Array.isArray(l.history) ? l.history.length : 0;
+        tr.appendChild(tdHistCount);
+
+        adminContractsTable.appendChild(tr);
+      });
+    }
+  }
+
+  exportPdfBtn.onclick = () => {
+    try {
+      const { jsPDF } = window.jspdf;
+      if (!jsPDF) {
+        alert('jsPDF library not loaded.');
+        return;
+      }
+      const doc = new jsPDF();
+
+      doc.setFontSize(18);
+      doc.text(`BDB Infra Sdn Bhd ${currentUser.isAdmin ? 'All' : 'My'} Licenses & Contracts`, 14, 22);
+
+      const licensesToExport = currentUser.isAdmin ? loadLicenses() : getLicensesForUser(currentUser.username);
+      if (!licensesToExport.length) {
+        alert('No data to export.');
+        return;
+      }
+
+      const headers = [['Type', 'Name', 'Start Date', 'End Date', 'Information']];
+      const rows = licensesToExport.map(l => [l.type, l.name, l.startDate, l.endDate, l.info || '']);
+
+      doc.autoTable({
+        head: headers,
+        body: rows,
+        startY: 30,
+        theme: 'striped',
+        headStyles: { fillColor: [0, 95, 115] },
+        styles: { fontSize: 10, cellWidth: 'wrap' },
+        columnStyles: {
+          4: { cellWidth: 65 },
+          1: { cellWidth: 50 }
+        }
+      });
+
+      doc.save(`bdbinfra_licenses_contracts_${new Date().toISOString().slice(0,10)}.pdf`);
+    } catch (error) {
+      alert('Error creating PDF: ' + error.message);
+    }
+  };
+
+  navButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.dataset.view === 'adminPanel' && !currentUser.isAdmin) {
+        alert('Access denied. Admins only.');
+        return;
+      }
+      showView(btn.dataset.view);
+      if (btn.dataset.view === 'licenses') {
+        renderLicensesContracts();
+      } else if (btn.dataset.view === 'dashboard') {
+        renderDashboard();
+        showExpirationNotifications();
+      } else if (btn.dataset.view === 'adminPanel') {
+        renderAdminPanel();
+      }
+    });
+  });
+
+  function showError(element, message) {
+    element.style.display = 'block';
+    element.textContent = message;
+  }
+  function clearError(element) {
+    element.style.display = 'none';
+    element.textContent = '';
+  }
+
+  loginForm.onsubmit = e => {
+    e.preventDefault();
+    clearError(loginError);
+    const username = document.getElementById('loginUsername').value.trim();
+    const password = document.getElementById('loginPassword').value;
+
+    if (validateLogin(username, password)) {
+      currentUser = findUserByUsername(username);
+      saveCurrentUser(currentUser);
+      loginForm.reset();
+      loadUIOnLogin();
+      showView('dashboard');
+      renderDashboard();
+      showExpirationNotifications();
+    } else {
+      showError(loginError, 'Invalid username or password.');
+    }
+  };
+
+  registerForm.onsubmit = e => {
+    e.preventDefault();
+    clearError(registerError);
+    const username = document.getElementById('registerUsername').value.trim();
+    const password = document.getElementById('registerPassword').value;
+    const confirmPassword = document.getElementById('registerPasswordConfirm').value;
+
+    if (username.length < 3) {
+      showError(registerError, 'Username must be at least 3 characters.');
+      return;
+    }
+    if (password.length < 8) {
+      showError(registerError, 'Password must be at least 8 characters.');
+      return;
+    }
+    if (password !== confirmPassword) {
+      showError(registerError, 'Passwords do not match.');
+      return;
+    }
+    if (findUserByUsername(username)) {
+      showError(registerError, 'This username is already taken.');
+      return;
+    }
+
+    if (registerUser(username, password)) {
+      alert('Registration successful! You may now login.');
+      registerForm.reset();
+      showView('login');
+    } else {
+      showError(registerError, 'Registration failed. Please try again.');
+    }
+  };
+
+  showRegisterBtn.onclick = () => {
+    clearError(loginError);
+    showView('register');
+  };
+
+  showLoginBtn.onclick = () => {
+    clearError(registerError);
+    showView('login');
+  };
+
+  logoutBtn.onclick = () => {
+    if (confirm('Are you sure you want to log out?')) {
+      currentUser = null;
+      clearCurrentUser();
+      resetAddLicenseForm();
+      licenseTypeSelect.disabled = false;
+      licenseNameInput.disabled = false;
+      showLoggedOutUI();
+      showView('login');
+    }
+  };
+
+  function loadUIOnLogin() {
+    nav.style.display = 'flex';
+    logoutBtn.style.display = 'inline-block';
+    const adminBtn = nav.querySelector('button[data-view="adminPanel"]');
+    adminBtn.style.display = currentUser.isAdmin ? 'inline-block' : 'none';
+    renewMode = false;
+    renewLicenseId = null;
+  }
+
+  function showLoggedOutUI() {
+    nav.style.display = 'none';
+    logoutBtn.style.display = 'none';
+  }
+
+  function showView(view) {
+    loginSection.style.display = 'none';
+    registerSection.style.display = 'none';
+    dashboardSection.style.display = 'none';
+    licensesSection.style.display = 'none';
+    addLicenseSection.style.display = 'none';
+    adminPanelSection.style.display = 'none';
+
+    navButtons.forEach(btn => {
+      btn.classList.remove('active');
+      btn.removeAttribute('aria-current');
+    });
+
+    switch(view) {
+      case 'login':
+        loginSection.style.display = 'block';
+        nav.style.display = 'none';
+        logoutBtn.style.display = 'none';
+        document.title = 'Login - BDB Infra License System';
+        break;
+      case 'register':
+        registerSection.style.display = 'block';
+        nav.style.display = 'none';
+        logoutBtn.style.display = 'none';
+        document.title = 'Register - BDB Infra License System';
+        break;
+      case 'dashboard':
+        dashboardSection.style.display = 'block';
+        nav.style.display = 'flex';
+        logoutBtn.style.display = 'inline-block';
+        setActiveNavButton('dashboard');
+        document.title = 'Dashboard - BDB Infra License System';
+        break;
+      case 'licenses':
+        licensesSection.style.display = 'block';
+        nav.style.display = 'flex';
+        logoutBtn.style.display = 'inline-block';
+        setActiveNavButton('licenses');
+        document.title = 'Licenses & Contracts - BDB Infra License System';
+        break;
+      case 'addLicense':
+        addLicenseSection.style.display = 'block';
+        nav.style.display = 'flex';
+        logoutBtn.style.display = 'inline-block';
+        setActiveNavButton('addLicense');
+        document.title = renewMode ? 'Renew License/Contract - BDB Infra' : 'Add License/Contract - BDB Infra';
+        break;
+      case 'adminPanel':
+        adminPanelSection.style.display = 'block';
+        nav.style.display = 'flex';
+        logoutBtn.style.display = 'inline-block';
+        setActiveNavButton('adminPanel');
+        document.title = 'Admin Panel - BDB Infra License System';
+        break;
+    }
+  }
+
+  function setActiveNavButton(view) {
+    navButtons.forEach(btn => {
+      if (btn.dataset.view === view) {
+        btn.classList.add('active');
+        btn.setAttribute('aria-current', 'page');
+      }
+    });
+  }
+
+  function resetAddLicenseForm() {
+    licenseTypeSelect.value = '';
+    licenseNameInput.value = '';
+    licenseStartDateInput.value = '';
+    licenseEndDateInput.value = '';
+    licenseInfoInput.value = '';
+    licenseNameInput.disabled = false;
+    licenseTypeSelect.disabled = false;
+  }
+
+  function initApp() {
+    initLocalStorage();
+    currentUser = loadCurrentUser();
+
+    if (currentUser) {
+      loadUIOnLogin();
+      showView('dashboard');
+      renderDashboard();
+      showExpirationNotifications();
+    } else {
+      showView('login');
+      showLoggedOutUI();
+    }
+  }
+
+  initApp();
+
+</script>
+<style>
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>
+</body>
+</html>
+
